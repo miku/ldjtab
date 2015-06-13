@@ -19,7 +19,8 @@ const Version = "0.1.0"
 
 // options carries the flags around
 type options struct {
-	key string
+	key       string
+	padlength int
 }
 
 // extracted carries around the extracted value together with its line number.
@@ -92,12 +93,22 @@ func extractor(queue chan []extracted, results chan extracted, opts options, wg 
 	}
 }
 
+// leftPad pads string s with padStr
+func leftPad(s string, padStr string, pLen int) string {
+	r := pLen - len(s)
+	if r > 0 {
+		return strings.Repeat(padStr, pLen-len(s)) + s
+	}
+	return s
+}
+
 // sink writes values as tab-separated values to stdout. pad line number, so
 // it can be sorted alongside non-numeric columns.
-func sink(c chan extracted, done chan bool) {
+func sink(c chan extracted, done chan bool, opts options) {
 	w := bufio.NewWriter(os.Stdout)
 	for v := range c {
-		w.WriteString(fmt.Sprintf("%s\t%d\n", v.value, v.lineno))
+		lineno := leftPad(fmt.Sprintf("%d", v.lineno), "0", opts.padlength)
+		w.WriteString(fmt.Sprintf("%s\t%s\n", v.value, lineno))
 	}
 	w.Flush()
 	done <- true
@@ -107,6 +118,7 @@ func main() {
 	key := flag.String("key", "", "key to deduplicate on")
 	numWorker := flag.Int("w", runtime.NumCPU(), "number of workers")
 	batchSize := flag.Int("size", 20000, "size per batch")
+	padlength := flag.Int("padlength", 0, "how many zeros as pad")
 	version := flag.Bool("v", false, "prints current program version")
 
 	flag.Parse()
@@ -140,7 +152,7 @@ func main() {
 		go extractor(queue, results, options{key: *key}, &wg)
 	}
 
-	go sink(results, done)
+	go sink(results, done, options{padlength: int(*padlength)})
 
 	var batch []extracted
 	var lineno int64
