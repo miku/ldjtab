@@ -97,7 +97,7 @@ func extractor(queue chan []extracted, results chan extracted, opts options, wg 
 func sink(c chan extracted, done chan bool) {
 	w := bufio.NewWriter(os.Stdout)
 	for v := range c {
-		w.WriteString(fmt.Sprintf("%s\t%010d\n", v.value, v.lineno))
+		w.WriteString(fmt.Sprintf("%s\t%d\n", v.value, v.lineno))
 	}
 	w.Flush()
 	done <- true
