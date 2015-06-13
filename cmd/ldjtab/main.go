@@ -15,6 +15,8 @@ import (
 	"sync"
 )
 
+const Version = "0.1.0"
+
 // options carries the flags around
 type options struct {
 	key string
@@ -105,8 +107,14 @@ func main() {
 	key := flag.String("key", "", "key to deduplicate on")
 	numWorker := flag.Int("w", runtime.NumCPU(), "number of workers")
 	batchSize := flag.Int("size", 20000, "size per batch")
+	version := flag.Bool("v", false, "prints current program version")
 
 	flag.Parse()
+
+	if *version {
+		fmt.Println(Version)
+		os.Exit(0)
+	}
 
 	if flag.NArg() < 1 {
 		log.Fatal("input file required")
