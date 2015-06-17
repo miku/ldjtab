@@ -1,10 +1,7 @@
 #!/usr/bin/env bats
 
-LDJTAB="go run cmd/ldjtab/main.go"
-TESTFILE_CROSSREF=fixtures/crossref.10.ldj
-
 @test "extract URL, line numbers" {
-  result="$($LDJTAB -key URL $TESTFILE_CROSSREF | wc -l)"
+  result="$(go run cmd/ldjtab/main.go -key URL fixtures/crossref.10.ldj | wc -l)"
   [ "$result" -eq 10 ]
 }
 
