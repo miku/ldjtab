@@ -15,7 +15,7 @@ import (
 	"sync"
 )
 
-const Version = "0.1.1"
+const Version = "0.1.2"
 
 // options carries the flags around
 type options struct {
