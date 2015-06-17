@@ -4,3 +4,6 @@ all:
 
 clean:
 	rm -f ldjtab
+
+test:
+	bats test.bats
