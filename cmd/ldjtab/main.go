@@ -115,10 +115,10 @@ func sink(c chan extracted, done chan bool, opts options) {
 }
 
 func main() {
-	key := flag.String("key", "", "key to deduplicate on")
+	key := flag.String("key", "", "key to extract")
 	numWorker := flag.Int("w", runtime.NumCPU(), "number of workers")
 	batchSize := flag.Int("size", 20000, "size per batch")
-	padlength := flag.Int("padlength", 0, "how many zeros as pad")
+	padlength := flag.Int("padlength", 10, "how many zeros as pad for line numbers")
 	version := flag.Bool("v", false, "prints current program version")
 
 	flag.Parse()
