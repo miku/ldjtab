@@ -28,7 +28,7 @@ deb: $(TARGETS)
 	mkdir -p packaging/deb/ldjtab/usr/sbin
 	cp $(TARGETS) packaging/deb/ldjtab/usr/sbin
 	cd packaging/deb && fakeroot dpkg-deb --build ldjtab .
-	mv packaging/deb/span_*.deb .
+	mv packaging/deb/ldjtab_*.deb .
 
 rpm: $(TARGETS)
 	mkdir -p $(HOME)/rpmbuild/{BUILD,SOURCES,SPECS,RPMS}
