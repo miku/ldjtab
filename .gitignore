@@ -1,3 +1,5 @@
 fixtures/
 /ldjtab
 /uldjtab
+/packaging/deb/ldjtab/usr
+packaging/deb/ldjtab_*.deb
