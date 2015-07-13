@@ -3,11 +3,14 @@ TARGETS = ldjtab uldjtab
 
 all: uldjtab ldjtab
 
-uldjtab: imports
+uldjtab: deps imports
 	go build -o uldjtab cmd/uldjtab/main.go
 
-ldjtab: imports
+ldjtab: deps imports
 	go build -o ldjtab cmd/ldjtab/main.go
+
+deps:
+	go get ./...
 
 imports:
 	goimports -w .
