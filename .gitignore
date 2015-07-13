@@ -3,3 +3,5 @@ fixtures/
 /uldjtab
 /packaging/deb/ldjtab/usr
 packaging/deb/ldjtab_*.deb
+ldjtab-*.rpm
+ldjtab_*.deb
