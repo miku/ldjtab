@@ -10,12 +10,11 @@ import (
 	"log"
 	"os"
 	"runtime"
-	"strconv"
 	"strings"
 	"sync"
-)
 
-const Version = "0.1.2"
+	"github.com/miku/ldjtab"
+)
 
 // options carries the flags around
 type options struct {
@@ -27,46 +26,6 @@ type options struct {
 type extracted struct {
 	lineno int64
 	value  string
-}
-
-var (
-	errKeyNotFound   = fmt.Errorf("key not found")
-	errValueNotFound = fmt.Errorf("value not found")
-	errInvalidType   = fmt.Errorf("invalid type")
-)
-
-// stringValue returns the value for a given key in dot notation. Work
-// resursively for objects, but not lists of objects.
-func stringValue(key string, doc map[string]interface{}) (string, error) {
-	keys := strings.Split(key, ".")
-	if len(keys) == 0 {
-		return "", errKeyNotFound
-	}
-
-	val, ok := doc[keys[0]]
-	if !ok {
-		return "", errKeyNotFound
-	}
-
-	switch val.(type) {
-	case string:
-		return val.(string), nil
-	case map[string]interface{}:
-		if len(keys) < 2 {
-			return "", errValueNotFound
-		}
-		return stringValue(keys[1], val.(map[string]interface{}))
-	case json.Number:
-		return fmt.Sprintf("%s", val), nil
-	case float64:
-		return strconv.FormatFloat(val.(float64), 'f', 6, 64), nil
-	case int:
-		return strconv.Itoa(val.(int)), nil
-	default:
-		return "", errInvalidType
-	}
-
-	return "", errValueNotFound
 }
 
 // extractor extracts a value for a key, which is given in options.
@@ -84,7 +43,7 @@ func extractor(queue chan []extracted, results chan extracted, opts options, wg 
 				log.Fatal(err)
 			}
 			// drop on simple key access, if its a top level key
-			value, err := stringValue(opts.key, target)
+			value, err := ldjtab.StringValue(opts.key, target)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -124,7 +83,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println(Version)
+		fmt.Println(ldjtab.Version)
 		os.Exit(0)
 	}
 
